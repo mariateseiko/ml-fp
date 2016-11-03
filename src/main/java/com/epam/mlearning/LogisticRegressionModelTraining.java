@@ -65,30 +65,12 @@ public class LogisticRegressionModelTraining {
                             row.getAdSlotFormat(),
                             row.getUserTags().hashCode()));});
 
-        /*JavaRDD<LabeledPoint>[] splits =labeledPoints.randomSplit(new double[]{0.6, 0.4});
-        JavaRDD<LabeledPoint> training = splits[0];
-        JavaRDD<LabeledPoint> test = splits[1];*/
-
         JavaRDD<LabeledPoint> training = labeledPoints;
 
         LogisticRegressionModel model = new LogisticRegressionWithLBFGS()
                 .setNumClasses(2)
                 .run(training.rdd());
-        model.setThreshold(0.2);
         model.save(sc.sc(), modelSavePath);
-
-       /* JavaRDD<Tuple2<Object, Object>> treePredictionAndLabels = test.map (x -> {
-            Double prediction = model.predict(x.features());
-            return new Tuple2<>(prediction, x.label());
-        });
-
-        MulticlassMetrics treeMetrics = new MulticlassMetrics(treePredictionAndLabels.rdd());
-        System.out.println("Precision = " + treeMetrics.precision());
-
-        BinaryClassificationMetrics baiesBcMetrics = new BinaryClassificationMetrics(treePredictionAndLabels.rdd());
-        System.out.println("Area under ROC = " + baiesBcMetrics.areaUnderROC());
-
-        System.out.println(treePredictionAndLabels.filter(x -> (double)x._1 > 0).count());*/
     }
 
 }
